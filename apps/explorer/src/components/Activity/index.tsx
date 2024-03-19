@@ -1,7 +1,6 @@
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-import { useFeatureIsOn } from '@growthbook/growthbook-react';
 // import { Filter16 } from '@mysten/icons';
 import { Heading } from '@mysten/ui';
 import { useState } from 'react';
@@ -29,7 +28,7 @@ const REFETCH_INTERVAL_SECONDS = 10;
 const REFETCH_INTERVAL = REFETCH_INTERVAL_SECONDS * 1000;
 
 export function Activity({ initialTab, initialLimit, disablePagination }: Props) {
-	const pollingTxnTableEnabled = useFeatureIsOn('polling-txn-table');
+	const pollingTxnTableEnabled = false;;
 
 	const [paused, setPaused] = useState(false);
 	const [activeTab, setActiveTab] = useState(() =>

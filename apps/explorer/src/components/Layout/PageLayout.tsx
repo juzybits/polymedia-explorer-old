@@ -1,7 +1,6 @@
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-import { useFeatureIsOn } from '@growthbook/growthbook-react';
 import { useAppsBackend, useElementDimensions, useLocalStorage } from '@mysten/core';
 import { Heading, LoadingIndicator, Text } from '@mysten/ui';
 import { useQuery } from '@tanstack/react-query';
@@ -178,7 +177,7 @@ export function PageLayout({ gradient, content, loading, isError }: PageLayoutPr
 	const enableExplorerRedirect = false;
 	const [network] = useNetworkContext();
 	const { request } = useAppsBackend();
-	const outageOverride = useFeatureIsOn('network-outage-override');
+	const outageOverride = false;
 
 	const { data } = useQuery({
 		queryKey: ['apps-backend', 'monitor-network'],

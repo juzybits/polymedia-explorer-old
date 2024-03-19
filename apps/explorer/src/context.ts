@@ -7,7 +7,6 @@ import { createContext, useContext, useLayoutEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { Network } from './utils/api/DefaultRpcClient';
-import { growthbook } from './utils/growthbook';
 import { queryClient } from './utils/queryClient';
 
 export const DEFAULT_NETWORK =
@@ -43,11 +42,6 @@ export function useNetwork(): [string, (network: Network | string) => void] {
 	};
 
 	useLayoutEffect(() => {
-		growthbook.setAttributes({
-			network,
-			environment: import.meta.env.VITE_VERCEL_ENV,
-		});
-
 		Sentry.setContext('network', {
 			network,
 		});

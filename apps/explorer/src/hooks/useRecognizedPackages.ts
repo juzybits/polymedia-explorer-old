@@ -1,7 +1,6 @@
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-import { useFeatureValue } from '@growthbook/growthbook-react';
 import { SUI_FRAMEWORK_ADDRESS, SUI_SYSTEM_ADDRESS } from '@mysten/sui.js/utils';
 
 import { useNetwork } from '~/context';
@@ -12,7 +11,7 @@ const DEFAULT_RECOGNIZED_PACKAGES = [SUI_FRAMEWORK_ADDRESS, SUI_SYSTEM_ADDRESS];
 export function useRecognizedPackages() {
 	const [network] = useNetwork();
 
-	const recognizedPackages = useFeatureValue('recognized-packages', DEFAULT_RECOGNIZED_PACKAGES);
+	const recognizedPackages: string[] = [];
 
 	// Our recognized package list is currently only available on mainnet
 	return network === Network.MAINNET ? recognizedPackages : DEFAULT_RECOGNIZED_PACKAGES;
