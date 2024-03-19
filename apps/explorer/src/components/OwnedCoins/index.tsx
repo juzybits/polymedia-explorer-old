@@ -132,7 +132,7 @@ export function OwnedCoins({ id }: { id: string }) {
 								<Info16 width="16px" />
 							</div>
 							<Text color="steel-darker" variant="body/medium">
-								These coins have not been recognized by Sui Foundation.
+								These coins have not been recognized.
 							</Text>
 						</div>
 					)}

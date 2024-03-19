@@ -51,7 +51,7 @@ export default function OwnedCoinView({ coin, id }: OwnedCoinViewProps) {
 
 					{!coin.isRecognized && (
 						<Tooltip
-							tip="This coin has not been recognized by Sui Foundation."
+							tip="This coin has not been recognized."
 						>
 							<Banner variant="warning" icon={null} border spacing="sm">
 								<Warning16 />
