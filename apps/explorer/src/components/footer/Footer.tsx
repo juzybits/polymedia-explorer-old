@@ -3,7 +3,6 @@
 
 import { Text } from '@mysten/ui';
 
-import { LegalLinks, LegalText } from './Legal';
 import { footerLinks, socialLinks } from './footerLinks';
 import { ReactComponent as MystenLabsRed } from '../../assets/MystenLabs_Red.svg';
 import { Link } from '~/ui/Link';
@@ -47,10 +46,6 @@ function Footer() {
 					<div>
 						<FooterLinks />
 					</div>
-				</div>
-				<div className="flex flex-col-reverse justify-center gap-3 pt-3 md:flex-row md:justify-between">
-					<LegalText />
-					<LegalLinks />
 				</div>
 			</nav>
 			<div className="mt-4 flex justify-center border-t border-solid border-gray-45 pt-5 text-hero-dark md:hidden md:self-start">

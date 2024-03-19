@@ -57,14 +57,3 @@ export const socialLinks = [
 		href: 'https://www.linkedin.com/company/mysten-labs/',
 	},
 ];
-
-export const legalLinks = [
-	{
-		title: 'Terms & Conditions',
-		href: 'https://mystenlabs.com/legal#termsofservice',
-	},
-	{
-		title: 'Privacy Policy',
-		href: 'https://mystenlabs.com/legal#privacypolicy',
-	},
-];
