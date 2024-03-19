@@ -2,21 +2,17 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import clsx from 'clsx';
-import { lazy, Suspense } from 'react';
 
 import { AccountsCardGraph } from '~/components/AccountCardGraph';
 import { Activity } from '~/components/Activity';
 import { CurrentEpoch, OnTheNetwork } from '~/components/HomeMetrics';
 import { PageLayout } from '~/components/Layout/PageLayout';
-import { SuiTokenCard } from '~/components/SuiTokenCard';
 import { TransactionsCardGraph } from '~/components/TransactionsCardGraph';
 import { ErrorBoundary } from '~/components/error-boundary/ErrorBoundary';
 import { TopPackagesCard } from '~/components/top-packages/TopPackagesCard';
 import { TopValidatorsCard } from '~/components/top-validators-card/TopValidatorsCard';
 import { useNetwork } from '~/context';
-import { Card } from '~/ui/Card';
 import { TabHeader } from '~/ui/Tabs';
-import { Network } from '~/utils/api/DefaultRpcClient';
 
 // const ValidatorMap = lazy(() => import('../../components/validator-map'));
 
@@ -24,7 +20,7 @@ const TRANSACTIONS_LIMIT = 25;
 
 function Home() {
 	const [network] = useNetwork();
-	const isSuiTokenCardEnabled = network === Network.MAINNET;
+	const isSuiTokenCardEnabled = false;
 	return (
 		<PageLayout
 			gradient={{
@@ -39,11 +35,13 @@ function Home() {
 						<div style={{ gridArea: 'epoch' }}>
 							<CurrentEpoch />
 						</div>
+						{/*
 						{isSuiTokenCardEnabled ? (
 							<div style={{ gridArea: 'token' }}>
 								<SuiTokenCard />
 							</div>
 						) : null}
+						*/}
 						<div style={{ gridArea: 'transactions' }}>
 							<TransactionsCardGraph />
 						</div>
