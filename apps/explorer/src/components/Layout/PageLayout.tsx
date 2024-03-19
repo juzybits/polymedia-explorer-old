@@ -3,7 +3,6 @@
 
 import { useAppsBackend, useElementDimensions, useLocalStorage } from '@mysten/core';
 import { Heading, LoadingIndicator, Text } from '@mysten/ui';
-import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { type ReactNode, useEffect, useRef } from 'react';
 
@@ -157,9 +156,8 @@ export function RedirectHeader() {
 export function PageLayout({ gradient, content, loading, isError }: PageLayoutProps) {
 	const enableExplorerRedirect = false;
 	const [network] = useNetworkContext();
-	const { request } = useAppsBackend();
-	const outageOverride = false;
 
+	/*
 	const { data } = useQuery({
 		queryKey: ['apps-backend', 'monitor-network'],
 		queryFn: () =>
@@ -171,9 +169,9 @@ export function PageLayout({ gradient, content, loading, isError }: PageLayoutPr
 		retry: false,
 		enabled: network === Network.MAINNET,
 	});
+	*/
 	const isGradientVisible = !!gradient;
-	const renderNetworkDegradeBanner =
-		outageOverride || (network === Network.MAINNET && data?.degraded);
+	const renderNetworkDegradeBanner = false;
 	const headerRef = useRef<HTMLElement | null>(null);
 	const [headerHeight] = useElementDimensions(headerRef, DEFAULT_HEADER_HEIGHT);
 
