@@ -17,7 +17,9 @@
 		"preview": "vite preview",
 		"storybook": "storybook dev",
 		"build-storybook": "storybook build",
-		"preview-storybook": "pnpm dlx serve ./storybook-static"
+		"preview-storybook": "pnpm dlx serve ./storybook-static",
+		"deploy-dev": "pnpm build && wrangler pages deploy build/ --project-name polymedia-explorer --branch dev",
+		"deploy-prod": "pnpm build && wrangler pages deploy build/ --project-name polymedia-explorer --branch main"
 	},
 	"dependencies": {
 		"@floating-ui/react": "^0.23.0",
