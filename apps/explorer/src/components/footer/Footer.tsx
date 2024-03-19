@@ -5,6 +5,8 @@ import { Text } from '@mysten/ui';
 
 import { footerLinks } from './footerLinks';
 import { Link } from '~/ui/Link';
+import { PolymediaLogo } from '../PolymediaLogo';
+import { ButtonOrLink } from '~/ui/utils/ButtonOrLink';
 
 function FooterLinks() {
 	return (
@@ -41,7 +43,7 @@ function Footer() {
 			<nav className="flex flex-col justify-center gap-4 divide-y divide-solid divide-gray-45 md:gap-7.5">
 				<div className="flex flex-col-reverse items-center gap-7.5 md:flex-row md:justify-between ">
 					<div className="hidden self-center text-hero-dark md:flex md:self-start">
-						<h1 className="font-bold text-gray-85">POLYMEDIA</h1>
+						<ButtonOrLink href='https://polymedia.app'><PolymediaLogo /></ButtonOrLink>
 					</div>
 					<div>
 						<FooterLinks />
@@ -49,7 +51,7 @@ function Footer() {
 				</div>
 			</nav>
 			<div className="mt-4 flex justify-center border-t border-solid border-gray-45 pt-5 text-hero-dark md:hidden md:self-start">
-				<h1 className="font-bold text-gray-85">POLYMEDIA</h1>
+				<ButtonOrLink href='https://polymedia.app'><PolymediaLogo /></ButtonOrLink>
 			</div>
 		</footer>
 	);
