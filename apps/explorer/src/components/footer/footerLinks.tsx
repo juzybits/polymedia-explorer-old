@@ -15,22 +15,25 @@ function FooterIcon({ children }: { children: ReactNode }) {
 }
 
 export const footerLinks = [
-	{ title: 'Blog', href: 'https://mystenlabs.com/blog' },
 	{
-		title: 'Whitepaper',
-		href: 'https://github.com/MystenLabs/sui/blob/main/doc/paper/sui.pdf',
-	},
-	{
-		title: 'Docs',
-		href: 'https://docs.mystenlabs.com',
+		title: 'About',
+		href: 'https://polymedia.app',
 	},
 	{
 		title: 'GitHub',
-		href: 'https://github.com/MystenLabs',
+		href: 'https://github.com/juzybits/polymedia-explorer/tree/main/apps/explorer',
 	},
-	{ title: 'Press', href: 'https://mystenlabs.com/#community' },
+	{
+		title: 'Twitter',
+		href: 'https://twitter.com/polymedia_app',
+	},
+	{
+		title: 'Discord',
+		href: 'https://discord.gg/DsxqP88EQp',
+	},
 ];
 
+/*
 export const socialLinks = [
 	{
 		children: (
@@ -38,7 +41,7 @@ export const socialLinks = [
 				<SocialDiscord24 />
 			</FooterIcon>
 		),
-		href: 'https://discord.gg/BK6WFhud',
+		href: 'https://discord.gg/DsxqP88EQp',
 	},
 	{
 		children: (
@@ -46,14 +49,7 @@ export const socialLinks = [
 				<SocialTwitter24 />
 			</FooterIcon>
 		),
-		href: 'https://twitter.com/Mysten_Labs',
-	},
-	{
-		children: (
-			<FooterIcon>
-				<SocialLinkedin24 />
-			</FooterIcon>
-		),
-		href: 'https://www.linkedin.com/company/mysten-labs/',
+		href: 'https://twitter.com/polymedia_app',
 	},
 ];
+*/

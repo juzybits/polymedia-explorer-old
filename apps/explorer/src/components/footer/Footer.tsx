@@ -3,8 +3,7 @@
 
 import { Text } from '@mysten/ui';
 
-import { footerLinks, socialLinks } from './footerLinks';
-import { ReactComponent as MystenLabsRed } from '../../assets/MystenLabs_Red.svg';
+import { footerLinks } from './footerLinks';
 import { Link } from '~/ui/Link';
 
 function FooterLinks() {
@@ -21,7 +20,7 @@ function FooterLinks() {
 					</li>
 				))}
 			</ul>
-
+			{/*
 			<ul className="flex justify-center gap-6">
 				{socialLinks.map(({ children, href }) => (
 					<li key={href}>
@@ -31,6 +30,7 @@ function FooterLinks() {
 					</li>
 				))}
 			</ul>
+			 */}
 		</div>
 	);
 }
@@ -41,7 +41,7 @@ function Footer() {
 			<nav className="flex flex-col justify-center gap-4 divide-y divide-solid divide-gray-45 md:gap-7.5">
 				<div className="flex flex-col-reverse items-center gap-7.5 md:flex-row md:justify-between ">
 					<div className="hidden self-center text-hero-dark md:flex md:self-start">
-						<MystenLabsRed />
+						<h1 className="font-bold text-gray-85">POLYMEDIA</h1>
 					</div>
 					<div>
 						<FooterLinks />
@@ -49,7 +49,7 @@ function Footer() {
 				</div>
 			</nav>
 			<div className="mt-4 flex justify-center border-t border-solid border-gray-45 pt-5 text-hero-dark md:hidden md:self-start">
-				<MystenLabsRed />
+				<h1 className="font-bold text-gray-85">POLYMEDIA</h1>
 			</div>
 		</footer>
 	);
