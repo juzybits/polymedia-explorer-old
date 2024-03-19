@@ -1,17 +1,14 @@
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-import { useCookieConsentBanner } from '@mysten/core';
 import { SuiClientProvider, WalletProvider } from '@mysten/dapp-kit';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Fragment } from 'react';
 import { resolveValue, Toaster, type ToastType } from 'react-hot-toast';
 import { Outlet, ScrollRestoration } from 'react-router-dom';
 
-import { useInitialPageView } from '../../hooks/useInitialPageView';
 import { NetworkContext, useNetwork } from '~/context';
 import { Banner, type BannerProps } from '~/ui/Banner';
-import { persistableStorage } from '~/utils/analytics/amplitude';
 import { type Network, NetworkConfigs, createSuiClient } from '~/utils/api/DefaultRpcClient';
 import { KioskClientProvider } from '@mysten/core/src/components/KioskClientProvider';
 
@@ -22,16 +19,6 @@ const toastVariants: Partial<Record<ToastType, BannerProps['variant']>> = {
 
 export function Layout() {
 	const [network, setNetwork] = useNetwork();
-
-	useCookieConsentBanner(persistableStorage, {
-		cookie_name: 'sui_explorer_cookie_consent',
-		onBeforeLoad: async () => {
-			await import('./cookieConsent.css');
-			document.body.classList.add('cookie-consent-theme');
-		},
-	});
-
-	useInitialPageView(network);
 
 	return (
 		// NOTE: We set a top-level key here to force the entire react tree to be re-created when the network changes:

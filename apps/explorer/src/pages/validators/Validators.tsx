@@ -26,7 +26,6 @@ import { Stats } from '~/ui/Stats';
 import { TableCard } from '~/ui/TableCard';
 import { TableHeader } from '~/ui/TableHeader';
 import { Tooltip } from '~/ui/Tooltip';
-import { ampli } from '~/utils/analytics/ampli';
 import { getValidatorMoveEvent } from '~/utils/getValidatorMoveEvent';
 import { VALIDATOR_LOW_STAKE_GRACE_PERIOD } from '~/utils/validatorConstants';
 
@@ -102,13 +101,6 @@ export function validatorsTableData(
 					return (
 						<Link
 							to={`/validator/${encodeURIComponent(props.row.original.address)}`}
-							onClick={() =>
-								ampli.clickedValidatorRow({
-									sourceFlow: 'Epoch details',
-									validatorAddress: props.row.original.address,
-									validatorName: name,
-								})
-							}
 						>
 							<div className="flex items-center gap-2.5">
 								<ImageIcon src={logo} size="sm" label={name} fallback={name} circle />
@@ -197,11 +189,6 @@ export function validatorsTableData(
 					return atRisk !== null ? (
 						<Tooltip
 							tip="Staked SUI is below the minimum SUI stake threshold to remain a validator."
-							onOpen={() =>
-								ampli.activatedTooltip({
-									tooltipLabel: label,
-								})
-							}
 						>
 							<div className="flex cursor-pointer flex-nowrap items-center">
 								<Text color="issue" variant="bodySmall/medium">

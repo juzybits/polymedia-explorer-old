@@ -15,7 +15,6 @@ import { AddressLink, ValidatorLink } from '~/ui/InternalLink';
 import { Link } from '~/ui/Link';
 import { PlaceholderTable } from '~/ui/PlaceholderTable';
 import { TableCard } from '~/ui/TableCard';
-import { ampli } from '~/utils/analytics/ampli';
 
 const NUMBER_OF_VALIDATORS = 10;
 
@@ -49,13 +48,6 @@ const validatorsTable = (
 						<ValidatorLink
 							address={address}
 							label={name}
-							onClick={() =>
-								ampli.clickedValidatorRow({
-									sourceFlow: 'Top validators - validator name',
-									validatorAddress: address,
-									validatorName: name,
-								})
-							}
 						/>
 					</div>
 				</HighlightedTableCol>
@@ -71,13 +63,6 @@ const validatorsTable = (
 					<AddressLink
 						address={address}
 						noTruncate={!limit}
-						onClick={() =>
-							ampli.clickedValidatorRow({
-								sourceFlow: 'Top validators - validator address',
-								validatorAddress: address,
-								validatorName: name,
-							})
-						}
 					/>
 				</HighlightedTableCol>
 			),

@@ -15,7 +15,6 @@ import {
 
 import { Tooltip } from './Tooltip';
 import { ReactComponent as InfoSvg } from './icons/info_10x10.svg';
-import { ampli } from '~/utils/analytics/ampli';
 
 type TabSize = 'md' | 'lg' | 'sm';
 
@@ -134,9 +133,6 @@ export function TabHeader({
 					{tooltip && (
 						<Tooltip
 							tip={tooltip}
-							onOpen={() => {
-								ampli.activatedTooltip({ tooltipLabel: title });
-							}}
 						>
 							<InfoSvg />
 						</Tooltip>

@@ -11,7 +11,6 @@ import { useEpochProgress } from '~/pages/epochs/utils';
 import { Card } from '~/ui/Card';
 import { ProgressBar } from '~/ui/ProgressBar';
 import { LinkWithQuery } from '~/ui/utils/LinkWithQuery';
-import { ampli } from '~/utils/analytics/ampli';
 
 export function CurrentEpoch() {
 	const { epoch, progress, label, end, start } = useEpochProgress();
@@ -37,7 +36,6 @@ export function CurrentEpoch() {
 	return (
 		<LinkWithQuery
 			to={`/epoch/${epoch}`}
-			onClick={() => ampli.clickedCurrentEpochCard({ epoch: Number(epoch) })}
 		>
 			<Card growOnHover bg="white/80" height="full" spacing="lg">
 				<div className="flex flex-col gap-2">

@@ -14,7 +14,6 @@ import { CoinIcon } from './CoinIcon';
 import CoinsPanel from './OwnedCoinsPanel';
 import { Banner } from '~/ui/Banner';
 import { Tooltip } from '~/ui/Tooltip';
-import { ampli } from '~/utils/analytics/ampli';
 
 type OwnedCoinViewProps = {
 	coin: CoinBalanceVerified;
@@ -53,11 +52,6 @@ export default function OwnedCoinView({ coin, id }: OwnedCoinViewProps) {
 					{!coin.isRecognized && (
 						<Tooltip
 							tip="This coin has not been recognized by Sui Foundation."
-							onOpen={() =>
-								ampli.activatedTooltip({
-									tooltipLabel: 'unrecognizedCoinWarning',
-								})
-							}
 						>
 							<Banner variant="warning" icon={null} border spacing="sm">
 								<Warning16 />

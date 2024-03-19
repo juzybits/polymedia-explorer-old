@@ -6,7 +6,6 @@ import clsx from 'clsx';
 
 import { ReactComponent as InfoSvg } from './icons/info_10x10.svg';
 import { Tooltip } from '~/ui/Tooltip';
-import { ampli } from '~/utils/analytics/ampli';
 
 import type { ReactNode } from 'react';
 
@@ -45,9 +44,6 @@ export function Stats({
 				{tooltip && (
 					<Tooltip
 						tip={unavailable ? 'Coming soon' : tooltip}
-						onOpen={() => {
-							ampli.activatedTooltip({ tooltipLabel: label });
-						}}
 					>
 						<InfoSvg />
 					</Tooltip>

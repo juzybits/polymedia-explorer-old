@@ -20,7 +20,6 @@ import { ButtonOrLink } from '~/ui/utils/ButtonOrLink';
 import { Image } from '~/ui/image/Image';
 import { ArrowRight12, Sui, SuiLogoTxt } from '@mysten/icons';
 import { useRedirectExplorerUrl } from '~/hooks/useRedirectExplorerUrl';
-import { ampli } from '~/utils/analytics/ampli';
 
 enum RedirectExplorer {
 	SUISCAN = 'suiscan',
@@ -69,12 +68,6 @@ function ImageLink({ type }: { type: RedirectExplorer }) {
 	return (
 		<div className="relative overflow-hidden rounded-3xl border border-gray-45 transition duration-300 ease-in-out hover:shadow-lg">
 			<ButtonOrLink
-				onClick={() => {
-					ampli.redirectToExternalExplorer({
-						name: type,
-						url: href,
-					});
-				}}
 				href={href}
 				target="_blank"
 				rel="noopener noreferrer"
@@ -84,12 +77,6 @@ function ImageLink({ type }: { type: RedirectExplorer }) {
 			<div className="absolute bottom-10 left-1/2 right-0 flex -translate-x-1/2 whitespace-nowrap">
 				<ButtonOrLink
 					className="flex w-full items-center justify-center gap-2 rounded-3xl bg-sui-dark px-3 py-2"
-					onClick={() => {
-						ampli.redirectToExternalExplorer({
-							name: type,
-							url: href,
-						});
-					}}
 					href={href}
 					target="_blank"
 					rel="noopener noreferrer"
@@ -127,12 +114,6 @@ function HeaderLink({ type }: { type: RedirectExplorer }) {
 			href={href}
 			target="_blank"
 			className="flex items-center gap-2 border-b border-gray-100 py-1 text-heading5 font-semibold"
-			onClick={() => {
-				ampli.redirectToExternalExplorer({
-					name: type,
-					url: href,
-				});
-			}}
 		>
 			{openWithLabel} <ArrowRight12 className="h-4 w-4 -rotate-45" />
 		</ButtonOrLink>
