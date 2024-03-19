@@ -1,7 +1,6 @@
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-import { SentryHttpTransport } from '@mysten/core';
 import { SuiClient, SuiHTTPTransport, getFullnodeUrl } from '@mysten/sui.js/client';
 
 export enum Network {
@@ -28,10 +27,7 @@ export const createSuiClient = (network: Network | string) => {
 	const networkUrl = network in Network ? NetworkConfigs[network as Network].url : network;
 
 	const client = new SuiClient({
-		transport:
-			network in Network && network === Network.MAINNET
-				? new SentryHttpTransport(networkUrl)
-				: new SuiHTTPTransport({ url: networkUrl }),
+		transport: new SuiHTTPTransport({ url: networkUrl }),
 	});
 	defaultClientMap.set(network, client);
 	return client;

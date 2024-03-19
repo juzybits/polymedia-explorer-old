@@ -1,7 +1,6 @@
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-import { wrapCreateBrowserRouter } from '@sentry/react';
 import { createBrowserRouter, Navigate, useLocation, useParams } from 'react-router-dom';
 
 import AddressResult from './address-result/AddressResult';
@@ -22,9 +21,7 @@ function RedirectWithId({ base }: { base: string }) {
 	return <Navigate to={`/${base}/${params.id}${search}`} replace />;
 }
 
-const sentryCreateBrowserRouter = wrapCreateBrowserRouter(createBrowserRouter);
-
-export const router = sentryCreateBrowserRouter([
+export const router = createBrowserRouter([
 	{
 		path: '/',
 		element: <Layout />,

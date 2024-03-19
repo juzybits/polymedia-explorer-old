@@ -1,7 +1,6 @@
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-import * as Sentry from '@sentry/react';
 import { createContext, useContext, useLayoutEffect, useMemo } from 'react';
 // eslint-disable-next-line no-restricted-imports
 import { useSearchParams } from 'react-router-dom';
@@ -40,12 +39,6 @@ export function useNetwork(): [string, (network: Network | string) => void] {
 
 		setSearchParams({ network: network.toLowerCase() });
 	};
-
-	useLayoutEffect(() => {
-		Sentry.setContext('network', {
-			network,
-		});
-	}, [network]);
 
 	return [network, setNetwork];
 }

@@ -10,7 +10,6 @@ import { RouterProvider } from 'react-router-dom';
 
 import { router } from './pages';
 import { queryClient } from './utils/queryClient';
-import './utils/sentry';
 
 import '@mysten/dapp-kit/dist/index.css';
 import './index.css';
