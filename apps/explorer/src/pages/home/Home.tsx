@@ -18,7 +18,7 @@ import { Card } from '~/ui/Card';
 import { TabHeader } from '~/ui/Tabs';
 import { Network } from '~/utils/api/DefaultRpcClient';
 
-const ValidatorMap = lazy(() => import('../../components/validator-map'));
+// const ValidatorMap = lazy(() => import('../../components/validator-map'));
 
 const TRANSACTIONS_LIMIT = 25;
 
@@ -64,13 +64,15 @@ function Home() {
 					<div style={{ gridArea: 'packages' }}>
 						<TopPackagesCard />
 					</div>
-					<div data-testid="validators-table" style={{ gridArea: 'validators' }}>
+					<div data-testid="validators-table" style={{ gridArea: 'validators' }}
+					>
 						<TabHeader title="Validators">
 							<ErrorBoundary>
 								<TopValidatorsCard limit={10} showIcon />
 							</ErrorBoundary>
 						</TabHeader>
 					</div>
+					{/*
 					<div
 						style={{ gridArea: 'node-map' }}
 						className="min-h-[320px] sm:min-h-[380px] lg:min-h-[460px] xl:min-h-[520px]"
@@ -81,6 +83,7 @@ function Home() {
 							</Suspense>
 						</ErrorBoundary>
 					</div>
+					*/}
 				</div>
 			}
 		/>
