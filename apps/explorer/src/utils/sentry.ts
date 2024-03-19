@@ -10,7 +10,7 @@ import {
 	useNavigationType,
 } from 'react-router-dom';
 
-const SENTRY_ENABLED = import.meta.env.PROD;
+const SENTRY_ENABLED = false;
 const SENTRY_SAMPLE_RATE = import.meta.env.VITE_SENTRY_SAMPLE_RATE
 	? parseFloat(import.meta.env.VITE_SENTRY_SAMPLE_RATE)
 	: 1;
