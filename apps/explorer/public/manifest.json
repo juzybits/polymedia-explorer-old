@@ -1,11 +1,11 @@
 {
-	"short_name": "sui-explorer",
-	"name": "Sui Explorer",
+	"short_name": "polymedia-explorer",
+	"name": "Polymedia Explorer",
 	"icons": [
 		{
-			"src": "favicon192x192.png",
+			"src": "https://assets.polymedia.app/img/all/logo-nomargin-transparent-512x512.webp",
 			"type": "image/png",
-			"sizes": "192x192"
+			"sizes": "512x512"
 		}
 	],
 	"start_url": ".",
