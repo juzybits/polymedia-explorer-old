@@ -279,7 +279,7 @@ function ValidatorPageResult() {
 					</Banner>
 				) : (
 					<>
-						<div className="grid gap-5 md:grid-cols-2">
+						<div className="grid gap-5 md:grid-cols-1">
 							<Card spacing="lg">
 								<div className="flex w-full basis-full flex-col gap-8">
 									<Heading as="div" variant="heading4/semibold" color="steel-darker">
@@ -325,11 +325,13 @@ function ValidatorPageResult() {
 								</div>
 							</Card>
 
+							{/*
 							<ErrorBoundary>
 								<Suspense fallback={null}>
 									<ValidatorMap minHeight={230} />
 								</Suspense>
 							</ErrorBoundary>
+							*/}
 						</div>
 						<div className="mt-8">
 							<ErrorBoundary>
