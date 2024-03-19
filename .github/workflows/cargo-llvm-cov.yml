@@ -138,7 +138,7 @@ jobs:
         echo "slack_id=$(echo ${slack_id} | tr -d '"')" >> $GITHUB_ENV
 
     - name: Post to slack
-      uses: slackapi/slack-github-action@v1.24.0 # pin@v1.21.0
+      uses: slackapi/slack-github-action@v1.25.0 # pin@v1.21.0
       env:
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         SUI_SHA: ${{ env.sui_sha }}
