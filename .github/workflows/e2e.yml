@@ -77,7 +77,7 @@ jobs:
         if: ${{ needs.diff.outputs.isTypescriptSDK == 'true' || needs.diff.outputs.isExplorer == 'true' || needs.diff.outputs.isRust == 'true'}}
         run: pnpm turbo --filter=sui-explorer build
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report-explorer
@@ -95,7 +95,7 @@ jobs:
       - name: Run Wallet e2e tests
         if: ${{ needs.diff.outputs.isWallet == 'true' || needs.diff.outputs.isRust == 'true' || needs.diff.outputs.isTypescriptSDK == 'true'}}
         run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- pnpm --filter sui-wallet playwright test
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report-wallet
