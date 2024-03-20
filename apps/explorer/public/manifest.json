@@ -1,15 +1,26 @@
 {
-	"short_name": "polymedia-explorer",
 	"name": "Polymedia Explorer",
+	"short_name": "Explorer",
+	"description": "Explore Sui transactions, objects, etc.",
+
+	"start_url": "/",
+	"scope": "/",
+	"display": "fullscreen",
+	"background_color": "#d2ecfb",
+	"theme_color": "#d2ecfb",
+
 	"icons": [
 		{
-			"src": "https://assets.polymedia.app/img/all/logo-nomargin-transparent-512x512.webp",
-			"type": "image/png",
-			"sizes": "512x512"
+			"src": "https://assets.polymedia.app/img/all/logo-maskable-bg-dark-512x512.webp",
+			"type": "image/webp",
+			"sizes": "512x512",
+			"purpose": "any"
+		},
+		{
+			"src": "https://assets.polymedia.app/img/all/logo-maskable-bg-dark-512x512.webp",
+			"type": "image/webp",
+			"sizes": "512x512",
+			"purpose": "maskable"
 		}
-	],
-	"start_url": ".",
-	"display": "standalone",
-	"theme_color": "#000000",
-	"background_color": "#ffffff"
+	]
 }

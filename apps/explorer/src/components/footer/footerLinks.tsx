@@ -21,7 +21,7 @@ export const footerLinks = [
 	},
 	{
 		title: 'GitHub',
-		href: 'https://github.com/juzybits/polymedia-explorer/tree/main/apps/explorer',
+		href: 'https://github.com/juzybits/polymedia-explorer',
 	},
 	{
 		title: 'Twitter',
