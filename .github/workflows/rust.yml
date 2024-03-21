@@ -54,7 +54,7 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # Pin v4.1.1
       - uses: bmwill/rust-cache@v1 # Fork of 'Swatinem/rust-cache' which allows caching additional paths
       - name: Install cargo-hakari, and cache the binary
-        uses: baptiste0928/cargo-install@1cd874a5478fdca35d868ccc74640c5aabbb8f1b # pin@v3.0.0
+        uses: baptiste0928/cargo-install@94e1849646e5797d0c8b34d8e525124ae9ae1d86 # pin@v3.0.1
         with:
           crate: cargo-hakari
           locked: true
@@ -145,7 +145,7 @@ jobs:
         run: |
           cargo doc --workspace --no-deps
       - name: Install cargo-hakari, and cache the binary
-        uses: baptiste0928/cargo-install@1cd874a5478fdca35d868ccc74640c5aabbb8f1b # pin@v3.0.0
+        uses: baptiste0928/cargo-install@94e1849646e5797d0c8b34d8e525124ae9ae1d86 # pin@v3.0.1
         with:
           crate: cargo-hakari
           locked: true
@@ -349,7 +349,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # Pin v4.1.1
       - name: Install cargo-hakari, and cache the binary
-        uses: baptiste0928/cargo-install@1cd874a5478fdca35d868ccc74640c5aabbb8f1b # pin@v3.0.0
+        uses: baptiste0928/cargo-install@94e1849646e5797d0c8b34d8e525124ae9ae1d86 # pin@v3.0.1
         with:
           crate: cargo-hakari
           locked: true
