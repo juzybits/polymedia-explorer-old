@@ -28,7 +28,7 @@ const REFETCH_INTERVAL_SECONDS = 10;
 const REFETCH_INTERVAL = REFETCH_INTERVAL_SECONDS * 1000;
 
 export function Activity({ initialTab, initialLimit, disablePagination }: Props) {
-	const pollingTxnTableEnabled = false;;
+	const pollingTxnTableEnabled = false;
 
 	const [paused, setPaused] = useState(false);
 	const [activeTab, setActiveTab] = useState(() =>
