@@ -416,6 +416,127 @@ mod tests {
         assert_eq!(sender_read, sender.to_string());
     }
 
+    #[tokio::test]
+    #[serial]
+    async fn test_zklogin_sig_verify() {
+        use shared_crypto::intent::Intent;
+        use shared_crypto::intent::IntentMessage;
+        use sui_test_transaction_builder::TestTransactionBuilder;
+        use sui_types::base_types::SuiAddress;
+        use sui_types::crypto::Signature;
+        use sui_types::signature::GenericSignature;
+        use sui_types::utils::load_test_vectors;
+        use sui_types::zk_login_authenticator::ZkLoginAuthenticator;
+
+        let _guard = telemetry_subscribers::TelemetryConfig::new()
+            .with_env()
+            .init();
+
+        let connection_config = ConnectionConfig::ci_integration_test_cfg();
+        let cluster =
+            sui_graphql_rpc::test_infra::cluster::start_cluster(connection_config, None).await;
+
+        let test_cluster = cluster.validator_fullnode_handle;
+        test_cluster.wait_for_epoch_all_nodes(1).await;
+        test_cluster.wait_for_authenticator_state_update().await;
+
+        // Construct a valid zkLogin transaction data, signature.
+        let (kp, pk_zklogin, inputs) =
+            &load_test_vectors("../sui-types/src/unit_tests/zklogin_test_vectors.json")[1];
+
+        let zklogin_addr = (pk_zklogin).into();
+        let rgp = test_cluster.get_reference_gas_price().await;
+        let gas = test_cluster
+            .fund_address_and_return_gas(rgp, Some(20000000000), zklogin_addr)
+            .await;
+        let tx_data = TestTransactionBuilder::new(zklogin_addr, gas, rgp)
+            .transfer_sui(None, SuiAddress::ZERO)
+            .build();
+        let msg = IntentMessage::new(Intent::sui_transaction(), tx_data.clone());
+        let eph_sig = Signature::new_secure(&msg, kp);
+        let generic_sig = GenericSignature::ZkLoginAuthenticator(ZkLoginAuthenticator::new(
+            inputs.clone(),
+            2,
+            eph_sig.clone(),
+        ));
+
+        // construct all parameters for the query
+        let bytes = Base64::encode(bcs::to_bytes(&tx_data).unwrap());
+        let signature = Base64::encode(generic_sig.as_ref());
+        let intent_scope = "TRANSACTION_DATA";
+        let author = zklogin_addr.to_string();
+
+        // now query the endpoint with a valid tx data bytes and a valid signature with the correct proof for dev env.
+        let query = r#"{ verifyZkloginSignature(bytes: $bytes, signature: $signature, intentScope: $intent_scope, author: $author ) { success, errors}}"#;
+        let variables = vec![
+            GraphqlQueryVariable {
+                name: "bytes".to_string(),
+                ty: "String!".to_string(),
+                value: json!(bytes),
+            },
+            GraphqlQueryVariable {
+                name: "signature".to_string(),
+                ty: "String!".to_string(),
+                value: json!(signature),
+            },
+            GraphqlQueryVariable {
+                name: "intent_scope".to_string(),
+                ty: "ZkLoginIntentScope!".to_string(),
+                value: json!(intent_scope),
+            },
+            GraphqlQueryVariable {
+                name: "author".to_string(),
+                ty: "SuiAddress!".to_string(),
+                value: json!(author),
+            },
+        ];
+        let res = cluster
+            .graphql_client
+            .execute_to_graphql(query.to_string(), true, variables, vec![])
+            .await
+            .unwrap();
+
+        // a valid signature with tx bytes returns success as true.
+        let binding = res.response_body().data.clone().into_json().unwrap();
+        tracing::info!("tktkbinding: {:?}", binding);
+        let res = binding.get("verifyZkloginSignature").unwrap();
+        assert_eq!(res.get("success").unwrap(), true);
+
+        // set up an invalid intent scope.
+        let incorrect_intent_scope = "PERSONAL_MESSAGE";
+        let incorrect_variables = vec![
+            GraphqlQueryVariable {
+                name: "bytes".to_string(),
+                ty: "String!".to_string(),
+                value: json!(bytes),
+            },
+            GraphqlQueryVariable {
+                name: "signature".to_string(),
+                ty: "String!".to_string(),
+                value: json!(signature),
+            },
+            GraphqlQueryVariable {
+                name: "intent_scope".to_string(),
+                ty: "ZkLoginIntentScope!".to_string(),
+                value: json!(incorrect_intent_scope),
+            },
+            GraphqlQueryVariable {
+                name: "author".to_string(),
+                ty: "SuiAddress!".to_string(),
+                value: json!(author),
+            },
+        ];
+        //  returns a non-empty errors list in response
+        let res = cluster
+            .graphql_client
+            .execute_to_graphql(query.to_string(), true, incorrect_variables, vec![])
+            .await
+            .unwrap();
+        let binding = res.response_body().data.clone().into_json().unwrap();
+        let res = binding.get("verifyZkloginSignature").unwrap();
+        assert_eq!(res.get("success").unwrap(), false);
+    }
+
     // TODO: add more test cases for transaction execution/dry run in transactional test runner.
     #[tokio::test]
     #[serial]

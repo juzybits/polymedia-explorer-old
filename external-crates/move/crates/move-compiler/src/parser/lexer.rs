@@ -210,8 +210,16 @@ impl<'input> Lexer<'input> {
         self.token
     }
 
+    pub fn remaining(&self) -> &'input str {
+        &self.text[self.cur_start..]
+    }
+
     pub fn content(&self) -> &'input str {
         &self.text[self.cur_start..self.cur_end]
+    }
+
+    pub fn loc_contents(&self, loc: Loc) -> &'input str {
+        &self.text[loc.start() as usize..loc.end() as usize]
     }
 
     pub fn file_hash(&self) -> FileHash {

@@ -2,7 +2,12 @@ name: Rust
 
 on:
   push:
-    branches: [main, extensions, devnet]
+    branches:
+      - 'main'
+      - 'devnet'
+      - 'testnet'
+      - 'mainnet'
+      - 'releases/sui-*-release'
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
 
@@ -265,6 +270,8 @@ jobs:
   # there are no rust changes in a given PR/commit. This ensures that we can
   # continue to block on the rust tests passing in the case of rust changes and
   # otherwise not block pushes to main.
+  # Note that this no-op job is only when there is a strategy matrix.
+  # Other required jobs without strategy matrix do not need a no-op counterpart.
   test-notrust:
     name: test
     needs: diff
@@ -283,6 +290,8 @@ jobs:
   # there are no rust changes in a given PR/commit. This ensures that we can
   # continue to block on the rust tests passing in the case of rust changes and
   # otherwise not block pushes to main.
+  # Note that this no-op job is needed when there is a strategy matrix.
+  # Other required jobs without strategy matrix do not need a no-op counterpart.
   test-extra-notrust:
     name: test-extra
     needs: diff
@@ -422,7 +431,7 @@ jobs:
        run: |
          cargo nextest run --test-threads 1 --package sui-graphql-rpc --test e2e_tests --test examples_validation_tests --features pg_integration
          cargo nextest run --test-threads 1 --package sui-graphql-rpc --lib --features pg_integration -- test_query_cost
-         cargo nextest run --test-threads 4 --package sui-graphql-e2e-tests --features pg_integration
+         cargo nextest run --test-threads 8 --package sui-graphql-e2e-tests --features pg_integration
          cargo nextest run --test-threads 1 --package sui-cluster-test --test local_cluster_test --features pg_integration
          cargo nextest run --test-threads 1 --package sui-indexer --test ingestion_tests --features pg_integration
 

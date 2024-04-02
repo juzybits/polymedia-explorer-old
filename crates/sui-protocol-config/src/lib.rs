@@ -12,7 +12,7 @@ use tracing::{info, warn};
 
 /// The minimum and maximum protocol versions supported by this build.
 const MIN_PROTOCOL_VERSION: u64 = 1;
-const MAX_PROTOCOL_VERSION: u64 = 41;
+const MAX_PROTOCOL_VERSION: u64 = 42;
 
 // Record history of protocol version allocations here:
 //
@@ -113,7 +113,8 @@ const MAX_PROTOCOL_VERSION: u64 = 41;
 // Version 39: Allow skipped epochs for randomness updates.
 //             Extra version to fix `test_upgrade_compatibility` simtest.
 // Version 40:
-// Version 41: Migrate sui framework and related code to Move 2024
+// Version 41: Enable group operations native functions in testnet and mainnet (without msm).
+// Version 42: Migrate sui framework and related code to Move 2024
 #[derive(Copy, Clone, Debug, Hash, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub struct ProtocolVersion(u64);
 
@@ -385,9 +386,20 @@ struct FeatureFlags {
     #[serde(skip_serializing_if = "is_false")]
     enable_group_ops_native_functions: bool,
 
+    // Enable native function for msm.
+    #[serde(skip_serializing_if = "is_false")]
+    enable_group_ops_native_function_msm: bool,
+
     // Reject functions with mutable Random.
     #[serde(skip_serializing_if = "is_false")]
     reject_mutable_random_on_entry_functions: bool,
+
+    // Controls the behavior of per object congestion control in consensus handler.
+    #[serde(skip_serializing_if = "PerObjectCongestionControlMode::is_none")]
+    per_object_congestion_control_mode: PerObjectCongestionControlMode,
+    // Set the upper bound allowed for max_epoch in zklogin signature.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    zklogin_max_epoch_upper_bound_delta: Option<u64>,
 }
 
 fn is_false(b: &bool) -> bool {
@@ -411,6 +423,20 @@ pub enum ConsensusTransactionOrdering {
 impl ConsensusTransactionOrdering {
     pub fn is_none(&self) -> bool {
         matches!(self, ConsensusTransactionOrdering::None)
+    }
+}
+
+// The config for per object congestion control in consensus handler.
+#[derive(Default, Copy, Clone, PartialEq, Eq, Serialize, Debug)]
+pub enum PerObjectCongestionControlMode {
+    #[default]
+    None, // No congestion control.
+    TotalGasBudget, // Use txn gas budget as execution cost.
+}
+
+impl PerObjectCongestionControlMode {
+    pub fn is_none(&self) -> bool {
+        matches!(self, PerObjectCongestionControlMode::None)
     }
 }
 
@@ -960,6 +986,10 @@ pub struct ProtocolConfig {
     consensus_max_transaction_size_bytes: Option<u64>,
     /// The maximum size of transactions included in a consensus proposed block
     consensus_max_transactions_in_block_bytes: Option<u64>,
+
+    // The max accumulated txn execution cost per object in a checkpoint. Transactions
+    // in a checkpoint will be deferred once their touch shared objects hit this limit.
+    max_accumulated_txn_cost_per_object_in_checkpoint: Option<u64>,
 }
 
 // feature flags
@@ -1150,6 +1180,10 @@ impl ProtocolConfig {
         self.feature_flags.accept_zklogin_in_multisig
     }
 
+    pub fn zklogin_max_epoch_upper_bound_delta(&self) -> Option<u64> {
+        self.feature_flags.zklogin_max_epoch_upper_bound_delta
+    }
+
     pub fn throughput_aware_consensus_submission(&self) -> bool {
         self.feature_flags.throughput_aware_consensus_submission
     }
@@ -1174,8 +1208,16 @@ impl ProtocolConfig {
         self.feature_flags.enable_group_ops_native_functions
     }
 
+    pub fn enable_group_ops_native_function_msm(&self) -> bool {
+        self.feature_flags.enable_group_ops_native_function_msm
+    }
+
     pub fn reject_mutable_random_on_entry_functions(&self) -> bool {
         self.feature_flags.reject_mutable_random_on_entry_functions
+    }
+
+    pub fn per_object_congestion_control_mode(&self) -> PerObjectCongestionControlMode {
+        self.feature_flags.per_object_congestion_control_mode
     }
 }
 
@@ -1193,8 +1235,18 @@ impl ProtocolConfig {
     /// Get the value ProtocolConfig that are in effect during the given protocol version.
     pub fn get_for_version(version: ProtocolVersion, chain: Chain) -> Self {
         // ProtocolVersion can be deserialized so we need to check it here as well.
-        assert!(version.0 >= ProtocolVersion::MIN.0, "{:?}", version);
-        assert!(version.0 <= ProtocolVersion::MAX_ALLOWED.0, "{:?}", version);
+        assert!(
+            version >= ProtocolVersion::MIN,
+            "Network protocol version is {:?}, but the minimum supported version by the binary is {:?}. Please upgrade the binary.",
+            version,
+            ProtocolVersion::MIN.0,
+        );
+        assert!(
+            version <= ProtocolVersion::MAX_ALLOWED,
+            "Network protocol version is {:?}, but the maximum supported version by the binary is {:?}. Please upgrade the binary.",
+            version,
+            ProtocolVersion::MAX_ALLOWED.0,
+        );
 
         let mut ret = Self::get_for_version_impl(version, chain);
         ret.version = version;
@@ -1610,6 +1662,8 @@ impl ProtocolConfig {
             consensus_max_transaction_size_bytes: None,
 
             consensus_max_transactions_in_block_bytes: None,
+
+            max_accumulated_txn_cost_per_object_in_checkpoint: None,
             // When adding a new constant, set it to None in the earliest version, like this:
             // new_constant: None,
         };
@@ -1894,6 +1948,7 @@ impl ProtocolConfig {
                     // Only enable group ops on devnet
                     if chain != Chain::Mainnet && chain != Chain::Testnet {
                         cfg.feature_flags.enable_group_ops_native_functions = true;
+                        cfg.feature_flags.enable_group_ops_native_function_msm = true;
                         // Next values are arbitrary in a similar way as the other crypto native functions.
                         cfg.group_ops_bls12381_decode_scalar_cost = Some(52);
                         cfg.group_ops_bls12381_decode_g1_cost = Some(52);
@@ -1969,7 +2024,44 @@ impl ProtocolConfig {
                     // It is important that we keep this protocol version blank due to an issue with random.move.
                 }
                 40 => {}
-                41 => {}
+                41 => {
+                    // Enable group ops and all networks (but not msm)
+                    cfg.feature_flags.enable_group_ops_native_functions = true;
+                    // Next values are arbitrary in a similar way as the other crypto native functions.
+                    cfg.group_ops_bls12381_decode_scalar_cost = Some(52);
+                    cfg.group_ops_bls12381_decode_g1_cost = Some(52);
+                    cfg.group_ops_bls12381_decode_g2_cost = Some(52);
+                    cfg.group_ops_bls12381_decode_gt_cost = Some(52);
+                    cfg.group_ops_bls12381_scalar_add_cost = Some(52);
+                    cfg.group_ops_bls12381_g1_add_cost = Some(52);
+                    cfg.group_ops_bls12381_g2_add_cost = Some(52);
+                    cfg.group_ops_bls12381_gt_add_cost = Some(52);
+                    cfg.group_ops_bls12381_scalar_sub_cost = Some(52);
+                    cfg.group_ops_bls12381_g1_sub_cost = Some(52);
+                    cfg.group_ops_bls12381_g2_sub_cost = Some(52);
+                    cfg.group_ops_bls12381_gt_sub_cost = Some(52);
+                    cfg.group_ops_bls12381_scalar_mul_cost = Some(52);
+                    cfg.group_ops_bls12381_g1_mul_cost = Some(52);
+                    cfg.group_ops_bls12381_g2_mul_cost = Some(52);
+                    cfg.group_ops_bls12381_gt_mul_cost = Some(52);
+                    cfg.group_ops_bls12381_scalar_div_cost = Some(52);
+                    cfg.group_ops_bls12381_g1_div_cost = Some(52);
+                    cfg.group_ops_bls12381_g2_div_cost = Some(52);
+                    cfg.group_ops_bls12381_gt_div_cost = Some(52);
+                    cfg.group_ops_bls12381_g1_hash_to_base_cost = Some(52);
+                    cfg.group_ops_bls12381_g2_hash_to_base_cost = Some(52);
+                    cfg.group_ops_bls12381_g1_hash_to_cost_per_byte = Some(2);
+                    cfg.group_ops_bls12381_g2_hash_to_cost_per_byte = Some(2);
+                    cfg.group_ops_bls12381_g1_msm_base_cost = Some(52);
+                    cfg.group_ops_bls12381_g2_msm_base_cost = Some(52);
+                    cfg.group_ops_bls12381_g1_msm_base_cost_per_input = Some(52);
+                    cfg.group_ops_bls12381_g2_msm_base_cost_per_input = Some(52);
+                    cfg.group_ops_bls12381_msm_max_len = Some(32);
+                    cfg.group_ops_bls12381_pairing_cost = Some(52);
+                }
+                42 => {
+                    cfg.feature_flags.zklogin_max_epoch_upper_bound_delta = Some(30);
+                }
                 // Use this template when making changes:
                 //
                 //     // modify an existing constant.
@@ -2064,6 +2156,18 @@ impl ProtocolConfig {
     }
     pub fn set_consensus_max_transactions_in_block_bytes(&mut self, val: u64) {
         self.consensus_max_transactions_in_block_bytes = Some(val);
+    }
+
+    pub fn set_per_object_congestion_control_mode(&mut self, val: PerObjectCongestionControlMode) {
+        self.feature_flags.per_object_congestion_control_mode = val;
+    }
+
+    pub fn set_max_accumulated_txn_cost_per_object_in_checkpoint(&mut self, val: u64) {
+        self.max_accumulated_txn_cost_per_object_in_checkpoint = Some(val);
+    }
+
+    pub fn set_zklogin_max_epoch_upper_bound_delta(&mut self, val: Option<u64>) {
+        self.feature_flags.zklogin_max_epoch_upper_bound_delta = val
     }
 }
 

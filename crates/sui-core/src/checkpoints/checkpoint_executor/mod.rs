@@ -602,6 +602,10 @@ impl CheckpointExecutor {
                     .await
                     .expect("Finalizing checkpoint cannot fail");
 
+                    self.checkpoint_store
+                        .insert_epoch_last_checkpoint(cur_epoch, checkpoint)
+                        .expect("Failed to insert epoch last checkpoint");
+
                     self.accumulator
                         .accumulate_epoch(
                             &cur_epoch,
@@ -680,12 +684,12 @@ async fn execute_checkpoint(
     // been successfully included in a checkpoint certified by quorum of validators.
     if let Some(round) = randomness_round {
         // RandomnessManager is only present on validators.
-        if let Some(randomness_manager) = epoch_store.randomness_manager() {
+        if let Some(randomness_reporter) = epoch_store.randomness_reporter() {
             debug!(
                 ?round,
-                "notifying RandomnessManager that randomness update was executed in checkpoint"
+                "notifying RandomnessReporter that randomness update was executed in checkpoint"
             );
-            randomness_manager.notify_randomness_in_checkpoint(round)?;
+            randomness_reporter.notify_randomness_in_checkpoint(round)?;
         }
     }
 
