@@ -11,13 +11,15 @@ const DEFAULT_RECOGNIZED_PACKAGES = [SUI_FRAMEWORK_ADDRESS, SUI_SYSTEM_ADDRESS];
 export function useRecognizedPackages() {
 	const [network] = useNetwork();
 
+	/* Note: remove leading zeros, otherwise coins won't get recognized. */
+
 	if (network === Network.MAINNET) {
 		return [
 			...DEFAULT_RECOGNIZED_PACKAGES,
 			/* AFSUI */ '0xf325ce1300e8dac124071d3152c5c5ee6174914f8bc2161e88329cf579246efc',
 			/* BUCK */ '0xce7ff77a83ea0cb6fd39bd8748e2ec89a3f41e8efdc3f4eb123e0ca37b184db2',
 			/* BURRY */ '0x6db9a7bb22829898fd281879778a175120ebfc77eafc1f8ee341654cfc3f8dc2',
-			/* CETUS */ '0x06864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b',
+			/* CETUS */ '0x6864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b',
 			/* FUD */ '0x76cb819b01abed502bee8a702b4c2d547532c12f25001c9dea795a5e631c26f1',
 			/* HASUI */ '0xbde4ba4c2e274a60ce15c1cfff9e5c42e41654ac8b6d906a57efa4bd3c29f47d',
 			/* HHS */ '0x996374e9df45796fe8112663a37272af4d33e7531c67d21aaa5cc93b3d1ded5c',
